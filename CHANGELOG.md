@@ -7,4 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- CNI chart at `2.8.1-stable`
+
 [Unreleased]: https://github.com/giantswarm/linkerd2-cni/tree/master
