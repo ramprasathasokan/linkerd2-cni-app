@@ -152,7 +152,7 @@ metadata:
     k8s-app: linkerd-cni
     {{.Values.cniResourceLabel}}: "true"
   annotations:
-    {{.Values.createdByAnnotation}}: {{.Values.cliVersion}}
+    {{.Values.createdByAnnotation}}: {{.Release.Service}}
 spec:
   selector:
     matchLabels:
@@ -166,13 +166,13 @@ spec:
       labels:
         k8s-app: linkerd-cni
       annotations:
-        {{.Values.createdByAnnotation}}: {{.Values.cliVersion}}
+        {{.Values.createdByAnnotation}}: {{.Release.Service}}
     spec:
       nodeSelector:
         beta.kubernetes.io/os: linux
       tolerations:
       - key: node-role.kubernetes.io/master
-      effect: NoSchedule
+        effect: NoSchedule
       hostNetwork: true
       serviceAccountName: linkerd-cni
       containers:
