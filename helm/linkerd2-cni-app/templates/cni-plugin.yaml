@@ -20,7 +20,7 @@ This file was inspired by
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: linkerd-{{ .Release.Namespace }}-cni
+  name: linkerd-{{.Release.Namespace}}-cni
   labels:
     {{.Values.cniResourceLabel}}: "true"
 spec:
@@ -42,33 +42,29 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: linkerd-cni
-  namespace: {{ .Release.Namespace }}
+  namespace: {{.Release.Namespace}}
   labels:
     {{.Values.cniResourceLabel}}: "true"
-{{- if .Values.imagePullSecrets }}
-imagePullSecrets:
-{{ toYaml .Values.imagePullSecrets | indent 2 }}
-{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: linkerd-cni
-  namespace: {{ .Release.Namespace }}
+  namespace: {{.Release.Namespace}}
   labels:
     {{.Values.cniResourceLabel}}: "true"
 rules:
 - apiGroups: ['extensions', 'policy']
   resources: ['podsecuritypolicies']
   resourceNames:
-  - linkerd-{{ .Release.Namespace }}-cni
+  - linkerd-{{.Release.Namespace}}-cni
   verbs: ['use']
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: linkerd-cni
-  namespace: {{ .Release.Namespace }}
+  namespace: {{.Release.Namespace}}
   labels:
     {{.Values.cniResourceLabel}}: "true"
 roleRef:
@@ -78,7 +74,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: linkerd-cni
-  namespace: {{ .Release.Namespace }}
+  namespace: {{.Release.Namespace}}
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -104,13 +100,13 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: linkerd-cni
-  namespace: {{ .Release.Namespace }}
+  namespace: {{.Release.Namespace}}
 ---
 kind: ConfigMap
 apiVersion: v1
 metadata:
   name: linkerd-cni-config
-  namespace: {{ .Release.Namespace }}
+  namespace: {{.Release.Namespace}}
   labels:
     {{.Values.cniResourceLabel}}: "true"
 data:
@@ -151,12 +147,12 @@ kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: linkerd-cni
-  namespace: {{ .Release.Namespace }}
+  namespace: {{.Release.Namespace}}
   labels:
     k8s-app: linkerd-cni
     {{.Values.cniResourceLabel}}: "true"
   annotations:
-    {{.Values.createdByAnnotation}}: {{default (printf "linkerd/helm %s" .Values.cniPluginVersion) .Values.cliVersion}}
+    {{.Values.createdByAnnotation}}: {{.Values.cliVersion}}
 spec:
   selector:
     matchLabels:
@@ -170,7 +166,7 @@ spec:
       labels:
         k8s-app: linkerd-cni
       annotations:
-        {{.Values.createdByAnnotation}}: {{default (printf "linkerd/helm %s" .Values.cniPluginVersion) .Values.cliVersion}}
+        {{.Values.createdByAnnotation}}: {{.Values.cliVersion}}
     spec:
       nodeSelector:
         beta.kubernetes.io/os: linux
@@ -179,9 +175,6 @@ spec:
       effect: NoSchedule
       hostNetwork: true
       serviceAccountName: linkerd-cni
-      {{- if .Values.priorityClassName }}
-      priorityClassName: {{ .Values.priorityClassName }}
-      {{- end }}
       containers:
       # This container installs the linkerd CNI binaries
       # and CNI network config file on each node. The install
